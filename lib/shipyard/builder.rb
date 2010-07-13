@@ -17,6 +17,7 @@ module Shipyard
         open(filename) do |file|
           # pass in the context object and render the template
           template = ERB.new(file.read)
+          template.filename = filename
           code = template.result(@context.get_binding)
           
           # write the rendered file to the associated destination
