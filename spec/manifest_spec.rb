@@ -4,21 +4,38 @@ module Shipyard
   describe Manifest do
 
     before(:each) do
-      @test_manifest = 'test.manifest'
+      @test_db = 'test.db'
+      @test_dir = 'test_manifest'
+      Dir.mkdir(@test_dir)
+      @test_manifest = File.join(@test_dir, 'Manifest')
       File.open(@test_manifest, 'w') do |file|
         file.write <<-EOF
-          self.schematic = 'test.schematic'
+          table :test_table
+
+          database "sqlite://#{@test_db}"
+
+          map :test_template, 'controllers/test.rb'
         EOF
       end
+      @m = Manifest.new(@test_manifest)
     end
 
     after(:each) do
       File.unlink(@test_manifest)
+      Dir.unlink(@test_dir)
+      @m = nil
     end
 
-    it "should read instance variables from a manifest file" do
-      m = Manifest.new(@test_manifest)
-      m.schematic.should == 'test.schematic'
+    it "should read a table name from the manifest file" do
+      @m.table.should == :test_table
+    end
+
+    it "should map template files to their output files" do
+      @m.maps[:test_template].should == 'controllers/test.rb' 
+    end
+
+    it "should read a database connection string from the manifest file" do
+      @m.db_conn_str.should == "sqlite://#{@test_db}"
     end
 
   end

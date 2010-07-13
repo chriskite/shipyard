@@ -9,7 +9,13 @@ module Shipyard
       #'mysql://offers_admin:2ownOffers@localhost/offers_admin'
       @db = Sequel.connect(db_conn_str)
       @table = @db[table_name.to_sym]
-      @manifest = Shipyard::Manifest.new(manifest_file)
+      @manifest = Manifest.new(manifest_file)
+    end
+
+    def generate
+      # for each template file
+        # pass in the db object and render the template
+        # write the rendered file to the associated destination
     end
 
   end
