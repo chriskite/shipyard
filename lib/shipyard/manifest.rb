@@ -1,7 +1,6 @@
 module Shipyard
   class Manifest
     attr_reader :maps
-    attr_reader :db_conn_str
 
     def initialize(filename)
       @maps = {} 
@@ -13,8 +12,9 @@ module Shipyard
       @table
     end
 
-    def database(conn_str)
-      @db_conn_str = conn_str
+    def database(sequel = nil)
+      @database = sequel if !!sequel
+      @database
     end
 
     def map(template, dst)

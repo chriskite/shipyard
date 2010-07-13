@@ -12,7 +12,7 @@ module Shipyard
         file.write <<-EOF
           table :test_table
 
-          database "sqlite://#{@test_db}"
+          database Sequel.sqlite 
 
           map :test_template, 'controllers/test.rb'
         EOF
@@ -34,8 +34,8 @@ module Shipyard
       @m.maps[:test_template].should == 'controllers/test.rb' 
     end
 
-    it "should read a database connection string from the manifest file" do
-      @m.db_conn_str.should == "sqlite://#{@test_db}"
+    it "should get a Sequel database connection from the manifest file" do
+      @m.database.should be_a_kind_of Sequel::SQLite::Database
     end
 
   end
