@@ -1,19 +1,30 @@
 require 'sequel'
+require 'ftools'
+require 'erb'
 
 module Shipyard
   class Builder 
     attr_reader :table
     attr_reader :db
 
-    def initialize(db_conn_str, table_name, manifest_file)
-      @table = @db[table_name.to_sym]
+    def initialize(manifest_file)
       @manifest = Manifest.new(manifest_file)
+      @context = Context.new(@manifest)
     end
 
     def generate
-      # for each template file
-        # pass in the db object and render the template
-        # write the rendered file to the associated destination
+      Dir['*.erb'].each do |filename|
+        open(filename) do |file|
+          # pass in the context object and render the template
+          template = ERB.new(file.read)
+          code = template.result(@context.get_binding)
+          
+          # write the rendered file to the associated destination
+          output_file = File.join(@manifest.output_dir, @manifest.destination_for(filename))
+          File.makedirs(File.dirname(output_file))
+          open(output_file, 'w') { |f| f.write(code) }
+        end
+      end
     end
 
   end

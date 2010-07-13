@@ -16,4 +16,8 @@ class Context
     @db.schema(@table.to_sym).inject({}) { |r, v| r[v[0]] = v[1][:type]; r }
   end
 
+  def get_binding
+    binding
+  end
+
 end
