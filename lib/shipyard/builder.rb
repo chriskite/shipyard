@@ -7,13 +7,20 @@ module Shipyard
     attr_reader :table
     attr_reader :db
 
-    def initialize(manifest_file)
-      @manifest = Manifest.new(manifest_file)
+    def initialize(manifest_file, table)
+      @manifest = Manifest.new(manifest_file, table)
       @context = Context.new(@manifest)
     end
 
     def generate
-      Dir['*.erb'].each do |filename|
+      templates = Dir['*.erb']
+
+      templates.each do |template|
+        abort "No destination mapped for template '#{template}'" unless !!@manifest.destination_for(template)
+      end
+
+      puts "Rendering to output directory #{@manifest.output_dir}"
+      templates.each do |filename|
         open(filename) do |file|
           # pass in the context object and render the template
           template = ERB.new(file.read)
@@ -21,9 +28,13 @@ module Shipyard
           code = template.result(@context.get_binding)
           
           # write the rendered file to the associated destination
-          output_file = File.join(@manifest.output_dir, @manifest.destination_for(filename))
+          dst = @manifest.destination_for(filename)
+          output_file = File.join(@manifest.output_dir, dst)
           File.makedirs(File.dirname(output_file))
-          open(output_file, 'w') { |f| f.write(code) }
+          open(output_file, 'w') do |f|
+            puts "\t#{filename} => #{output_file}"
+            f.write(code)
+          end
         end
       end
     end

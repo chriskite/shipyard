@@ -3,5 +3,22 @@
 $:.unshift(File.dirname(__FILE__) + '/../lib/')
 require 'shipyard'
 
-builder = Shipyard::Builder.new('Manifest')
+MANIFEST_FILE = 'Manifest'
+
+def usage
+  puts <<-END
+Usage: shipyard <table name>
+  END
+end
+
+if ARGV.size != 1
+  usage
+  Process.exit(1)
+end
+
+if !File.exists?(MANIFEST_FILE)
+  puts "No Manifest file found in current directory."
+  Process.exit(2)
+end
+builder = Shipyard::Builder.new(MANIFEST_FILE, ARGV.first)
 builder.generate

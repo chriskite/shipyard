@@ -5,17 +5,17 @@ class Context
 
   def initialize(manifest)
     @db = manifest.database
-    @table = manifest.table.to_s
+    @table = manifest.table
+    @row = manifest.row
     @dataset = @db[manifest.table]
-    @row = Inflector::singularize(manifest.table.to_s)
   end
 
   def columns
-    columns_with_types.keys.map(&:to_s)
+    @db.schema(@table.to_sym).map { |arr| arr[0].to_s }
   end
 
   def columns_with_types
-    @db.schema(@table.to_sym).inject({}) { |r, v| r[v[0].to_s] = v[1][:type].to_s; r }
+    @db.schema(@table.to_sym).inject({}) { |r, v| r[v[0].to_s] = v[1][:type]; r }
   end
 
   def primary_key

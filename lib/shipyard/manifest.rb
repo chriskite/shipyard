@@ -1,15 +1,14 @@
+require 'active_support/inflector'
+
 module Shipyard
   class Manifest
-    attr_reader :maps
+    attr_reader :table, :row, :maps
 
-    def initialize(filename)
+    def initialize(filename, table)
+      @table = table
+      @row = ActiveSupport::Inflector.singularize(table)
       @maps = {} 
       open(filename) { |file| instance_eval(file.read) }
-    end
-
-    def table(name = nil)
-      @table = name if !!name
-      @table
     end
 
     def database(sequel = nil)
