@@ -1,6 +1,6 @@
 require 'rubygems'
-require 'active_support/inflector'
-require 'shipyard/builder.rb'
-require 'shipyard/context.rb'
-require 'shipyard/manifest.rb'
+require 'shipyard/extensions'
+require 'shipyard/builder'
+require 'shipyard/context'
+require 'shipyard/manifest'
 

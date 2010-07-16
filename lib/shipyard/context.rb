@@ -1,5 +1,4 @@
 class Context
-  include ActiveSupport
 
   attr_reader :db, :table, :row, :dataset
 

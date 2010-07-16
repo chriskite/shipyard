@@ -1,5 +1,3 @@
-require 'active_support/inflector'
-
 module Shipyard
   class Manifest
     attr_reader :table, :row, :maps
